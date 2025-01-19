@@ -29,7 +29,7 @@ T ActionHandler::execute(Action action, T a, T b) {
         case Action::Subtract:
             return subtract(a, b);
         default:
-            throw std::invalid_argument("Unknown action");
+            throw "Unknown action";
     }
 }
 

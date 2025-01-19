@@ -16,8 +16,14 @@ main_server.o: main_server.cpp
 main_client.o: main_client.cpp
 	$(CXX) $(CXXFLAGS) -c main_client.cpp
 
+data_handler.o: src/data_handler.cpp inc/data_handler.h
+	$(CXX) $(CXXFLAGS) -c src/data_handler.cpp
+
 action_handler.o: src/action_handler.cpp inc/action_handler.h
 	$(CXX) $(CXXFLAGS) -c src/action_handler.cpp
+
+
+
 
 clean:
 	rm -f *.o main_server main_client
