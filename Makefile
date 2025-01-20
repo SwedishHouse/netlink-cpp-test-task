@@ -1,15 +1,14 @@
 CXX = g++
-CXXFLAGS = -Iinc -I/usr/local/include -g -std=c++17
-LDFLAGS = -L/usr/local/lib -lgtest -lgtest_main -pthread
-
+CXXFLAGS = -Iinc -I/usr/local/include -I/usr/include/libnl3/ -g -std=c++17
+LDFLAGS = -L/usr/local/lib -lgtest -lgtest_main -pthread -lnl-3 -lnl-genl-3
 
 all: main_server main_client test_math test_data_handler
 
 main_server: main_server.o action_handler.o
-	$(CXX) -o main_server main_server.o action_handler.o
+	$(CXX) -o main_server main_server.o action_handler.o $(LDFLAGS)
 
 main_client: main_client.o action_handler.o
-	$(CXX) -o main_client main_client.o action_handler.o
+	$(CXX) -o main_client main_client.o action_handler.o $(LDFLAGS)
 
 test_math: tests/test_math.o action_handler.o
 	$(CXX) $(CXXFLAGS) -o tests/test_math tests/test_math.o action_handler.o $(LDFLAGS)
@@ -33,4 +32,4 @@ test_data_handler: tests/test_data_handler.o data_handler.o action_handler.o
 	$(CXX) $(CXXFLAGS) -o tests/test_data_handler tests/test_data_handler.o data_handler.o action_handler.o $(LDFLAGS)
 
 clean:
-	rm -f *.o main_server main_client
+	rm -f *.o main_server main_client tests/test_math tests/test_data_handler

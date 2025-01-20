@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "${vcpkgRoot}/x64-linux/include",
                 "${workspaceFolder}/inc",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}/src",
+                "/usr/include/libnl3/"
 
             ],
             "defines": [],
