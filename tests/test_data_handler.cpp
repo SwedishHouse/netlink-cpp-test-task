@@ -18,6 +18,7 @@ protected:
         })";
         // Парсинг JSON строки в структуру данных
         handler1.parseDataToStructure(jsonString);
+        handler1.processData();
 
         jsonString = R"({
             "action": "sub",
@@ -25,6 +26,7 @@ protected:
             "argument_2": 2
         })";
         handler2.parseDataToStructure(jsonString);
+        handler2.processData();
 
         jsonString = R"({
             "action": "mul",
@@ -32,6 +34,7 @@ protected:
             "argument_2": 2
         })";
         handler3.parseDataToStructure(jsonString);
+        handler3.processData();
     }
 };
 
@@ -52,6 +55,20 @@ TEST_F(DataHandlerTest, GetArgTwoDouble) {
     EXPECT_DOUBLE_EQ(handler1.getArgTwo<double>(), 20.5);
     EXPECT_EQ(handler2.getArgTwo<int>(), 2);
     EXPECT_DOUBLE_EQ(handler3.getArgTwo<double>(), 2.0);
+}
+
+TEST_F(DataHandlerTest, parseToJSON) {
+    std::string expectedJson = R"({"result":30.5})";
+    std::string actualJson = handler1.parseToJSON();
+    EXPECT_EQ(actualJson, expectedJson);
+
+    expectedJson = R"({"result":2})";
+    actualJson = handler2.parseToJSON();
+    EXPECT_EQ(actualJson, expectedJson);
+
+    expectedJson = R"({"result":-26.4})";
+    actualJson = handler3.parseToJSON();
+    EXPECT_EQ(actualJson, expectedJson);
 }
 
 int main(int argc, char **argv) {

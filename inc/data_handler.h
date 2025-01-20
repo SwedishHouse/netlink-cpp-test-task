@@ -54,9 +54,10 @@ class DataHandler{
         // };
 
         DataHandler(); //constructor
-        void processData(const std::string& jsonData); // Execute from ready JSON
+        void processData();// use object instance 
+        // void processData(const std::string& jsonData); // Execute from ready JSON
         void parseDataToStructure(const std::string& jsonData);
-        std::string parseToJSON(const std::map<std::string, std::variant<int, double>>& data);
+        std::string parseToJSON();
 
         std::string getAction();
 

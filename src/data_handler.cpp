@@ -5,7 +5,7 @@ DataHandler::DataHandler()//: json_fields{"action", "argument_1", "argument_2"}
     // There needs something do. But i din't mind
 }
 
-void DataHandler::processData(const std::string& jsonData)
+void DataHandler::processData()
 {
     ActionHandler::Action act;
     std::variant<int, double> res;
@@ -30,6 +30,32 @@ void DataHandler::processData(const std::string& jsonData)
     
     this->server_data["result"] = res;
 }
+
+// void DataHandler::processData(const std::string& jsonData)
+// {
+//     ActionHandler::Action act;
+//     std::variant<int, double> res;
+//     auto it = this->action_types.find(this->client_data.operationType);
+//     if (it != action_types.end()) 
+//         act = it->second;
+//     else
+//     {
+//         throw "No supported action!";
+//     }
+
+//     if(std::holds_alternative<double>(this->client_data.arg1))
+//     {
+//         res = this->action_handler.execute<double>(act,   std::get<double>(this->client_data.arg1),
+//                                                     std::get<double>( this->client_data.arg2));
+//     }
+//     else if(std::holds_alternative<int>(this->client_data.arg1))
+//     {
+//         res = this->action_handler.execute<int>(act,   std::get<int>(this->client_data.arg1),
+//                                                     std::get<int>( this->client_data.arg2));
+//     }
+    
+//     this->server_data["result"] = res;
+// }
 
 std::string DataHandler::getAction()
 {
@@ -59,7 +85,7 @@ void DataHandler::parseDataToStructure(const std::string& jsonData)
     this->Doc[this->json_fields.at(static_cast<int>(DataHandler::JSON_POS::POS_ARG_2))].is_number_float();
 
     this->client_data.operationType = this->Doc[this->json_fields.at(static_cast<int>(DataHandler::JSON_POS::POS_ACT))];
-    if(is_double){
+    if(is_double) {
         double arg_d_1, arg_d_2;
 
         arg_d_1 = this->Doc[this->json_fields.at(static_cast<int>(DataHandler::JSON_POS::POS_ARG_1))];
@@ -68,7 +94,7 @@ void DataHandler::parseDataToStructure(const std::string& jsonData)
         this->client_data.arg1 = arg_d_1;
         this->client_data.arg2 = arg_d_2;
     }
-    else{
+    else {
         int arg_int_1, arg_int_2;
 
         arg_int_1 = this->Doc[this->json_fields.at(static_cast<int>(DataHandler::JSON_POS::POS_ARG_1))];
@@ -79,11 +105,12 @@ void DataHandler::parseDataToStructure(const std::string& jsonData)
     }
 }
 
-std::string DataHandler::parseToJSON(const std::map<std::string, std::variant<int, double>>& data)
+std::string DataHandler::parseToJSON()
 {
     json j;
 
-    for (const auto& [key, value] : data) {
+    for (const auto& [key, value] : this->server_data)
+    {
         if (std::holds_alternative<int>(value)) {
             j[key] = std::get<int>(value);
         } else if (std::holds_alternative<double>(value)) {
