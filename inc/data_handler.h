@@ -1,18 +1,18 @@
 #pragma once
+
+
 #include <string>
 #include <vector>
 #include <map>
 #include <variant>
-
 #include "action_handler.h"
 #include "json.hpp"
+
 
 using json = nlohmann::json;
 
 
 class DataHandler{
-
-
     
     public:
 
@@ -29,9 +29,9 @@ class DataHandler{
 
         // Define client cmds
         const std::map<std::string, ActionHandler::Action> action_types = {
-            {"add", ActionHandler::Action::Add},
-            {"sub", ActionHandler::Action::Subtract},
-            {"mul", ActionHandler::Action::Multiply}
+            {"add", ActionHandler::Action::ADD},
+            {"sub", ActionHandler::Action::SUBSTRACT},
+            {"mul", ActionHandler::Action::MULTIPLY}
         };
         // const std::map<std::string, ActionHandler::Action> operation_types = {
         //     {"action"}
@@ -49,6 +49,4 @@ class DataHandler{
         std::string raw_data;
         json Doc;
 
-}
-
-
+};

@@ -14,7 +14,7 @@ T ActionHandler::add(const T a, const T b) {
 
 // Метод для вычитания
 template <typename T> 
-T ActionHandler::subtract(const T a, const T b) {
+T ActionHandler::substract(const T a, const T b) {
     return a - b;
 }
 
@@ -22,12 +22,12 @@ T ActionHandler::subtract(const T a, const T b) {
 template <typename T>
 T ActionHandler::execute(Action action, T a, T b) {
     switch (action) {
-        case Action::Multiply:
+        case Action::MULTIPLY:
             return multiply(a, b);
-        case Action::Add:
+        case Action::ADD:
             return add(a, b);
-        case Action::Subtract:
-            return subtract(a, b);
+        case Action::SUBSTRACT:
+            return substract(a, b);
         default:
             throw "Unknown action";
     }
@@ -42,8 +42,8 @@ template double ActionHandler::multiply<double>(double a, double b);
 template int ActionHandler::add<int>(int a, int b);
 template double ActionHandler::add<double>(double a, double b);
 
-template int ActionHandler::subtract<int>(int a, int b);
-template double ActionHandler::subtract<double>(double a, double b);
+template int ActionHandler::substract<int>(int a, int b);
+template double ActionHandler::substract<double>(double a, double b);
 
 template int ActionHandler::execute<int>(Action action, int a, int b);
 template double ActionHandler::execute<double>(Action action, double a, double b);

@@ -3,9 +3,9 @@
 class ActionHandler {
     public:
         enum class Action {
-            Multiply,
-            Add,
-            Subtract
+            MULTIPLY,
+            ADD,
+            SUBSTRACT
         };
 
         // Метод для умножения
@@ -18,7 +18,7 @@ class ActionHandler {
 
         // Метод для вычитания
         template <typename T>
-        T subtract(const T a, const T b);
+        T substract(const T a, const T b);
 
         // Функция-обертка для выполнения действий
         template <typename T>
