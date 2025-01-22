@@ -1,62 +1,70 @@
-#include <libnl3/netlink/netlink.h>
-#include <libnl3/netlink/genl/genl.h>
-#include <libnl3/netlink/genl/ctrl.h>
 #include <iostream>
 #include <cstring>
+#include <unistd.h>
+#include <linux/netlink.h>
+#include <linux/genetlink.h>
+#include <sys/socket.h>
+#include <thread>
+#include <chrono>
 
 #define GENL_TEST_FAMILY_NAME "genl_test"
-#define GENL_TEST_MCGRP_NAME "genl_mcgrp"
+#define GENL_TEST_MCGRP_NAME "genl_test_mcgrp"
 
 int main() {
-    nl_sock *sock;
-    nl_msg *msg;
-    genlmsghdr *genlh;
-    const char *message = "Hello from server";
+    struct sockaddr_nl sa, client_sa;
+    struct nlmsghdr *nlh;
+    int sock_fd;
+    char buffer[256];
 
-    sock = nl_socket_alloc();
-    if (!sock) {
-        std::cerr << "Failed to allocate socket." << std::endl;
+    sock_fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
+    if (sock_fd < 0) {
+        perror("socket");
         return -1;
     }
 
-    if (genl_connect(sock)) {
-        std::cerr << "Failed to connect to Generic Netlink." << std::endl;
-        nl_socket_free(sock);
+    pid_t pid = getpid();
+    std::cout << "Server pid: " << pid << std::endl;
+    memset(&sa, 0, sizeof(sa));
+    sa.nl_family = AF_NETLINK;
+    // sa.nl_pid = getpid();
+    sa.nl_pid = pid;
+    sa.nl_groups = 0;
+
+    if (bind(sock_fd, (struct sockaddr *)&sa, sizeof(sa)) < 0) {
+        perror("bind");
+        close(sock_fd);
         return -1;
     }
 
-    int family_id = genl_ctrl_resolve(sock, GENL_TEST_FAMILY_NAME);
-    if (family_id < 0) {
-        std::cerr << "Family not found." << std::endl;
-        nl_socket_free(sock);
-        return -1;
+    nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(256));
+    while (true) {
+        socklen_t client_sa_len = sizeof(client_sa);
+        int len = recvfrom(sock_fd, nlh, NLMSG_SPACE(256), 0, (struct sockaddr *)&client_sa, &client_sa_len);
+        if (len < 0) {
+            perror("recvfrom");
+            close(sock_fd);
+            return -1;
+        }
+
+        std::string received_json = (char *)NLMSG_DATA(nlh) + GENL_HDRLEN;
+        std::cout << "Received JSON string: " << received_json << std::endl;
+
+        // Отправка полученного сообщения обратно клиенту
+        // nlh->nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN + received_json.size() + 1);
+        // strcpy((char *)NLMSG_DATA(nlh) + GENL_HDRLEN, received_json.c_str());
+        std::string hello = "Hello from server";
+        nlh->nlmsg_len = NLMSG_LENGTH(GENL_HDRLEN + hello.size() + 1);
+        strcpy((char *)NLMSG_DATA(nlh) + GENL_HDRLEN, hello.c_str());
+
+        if (sendto(sock_fd, nlh, nlh->nlmsg_len, 0, (struct sockaddr *)&client_sa, client_sa_len) < 0) {
+            perror("sendto");
+            close(sock_fd);
+            return -1;
+        }
+
+        std::cout << "Echoed JSON string sent: " << received_json << std::endl;
     }
 
-    msg = nlmsg_alloc();
-    if (!msg) {
-        std::cerr << "Failed to allocate message." << std::endl;
-        nl_socket_free(sock);
-        return -1;
-    }
-
-    genlh = static_cast<genlmsghdr*>(genlmsg_put(msg, NL_AUTO_PORT, NL_AUTO_SEQ, family_id, 0, 0, 0, 1));
-    if (!genlh) {
-        std::cerr << "Failed to put Generic Netlink header." << std::endl;
-        nlmsg_free(msg);
-        nl_socket_free(sock);
-        return -1;
-    }
-
-    nla_put_string(msg, 1, message);
-
-    if (nl_send_auto(sock, msg) < 0) {
-        std::cerr << "Failed to send message." << std::endl;
-        nlmsg_free(msg);
-        nl_socket_free(sock);
-        return -1;
-    }
-
-    nlmsg_free(msg);
-    nl_socket_free(sock);
+    close(sock_fd);
     return 0;
 }
