@@ -20,6 +20,7 @@
 
 int main() {
     unsigned int counter = 0;
+    DataHandler data_handler;
     // Create socket
     int sock_fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
     if (sock_fd < 0) {
@@ -48,30 +49,20 @@ int main() {
         close(sock_fd);
         return -1;
     }
-    const std::string response_base = "Response from server: ";
-    std::string response; 
+    // const std::string response_base = "Response from server: ";
+    // std::string response; 
+
+    std::string from_client;
+    std::string response;
     while (true) {
-        std::cout << receive_gnl_message(sock_fd) <<std::endl;
-        response = response_base + std::to_string(++counter);
+        from_client = receive_gnl_message(sock_fd);
+
+        std::cout << from_client << std::endl;
+        data_handler.parseDataToStructure(from_client);
+        data_handler.processData();
+        response = data_handler.parseToJSON();
         send_gnl_message(response, sock_fd);
-        // struct nlmsghdr *nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(TEST_NL_BUFF_SIZE));
-        // memset(nlh, 0, NLMSG_SPACE(TEST_NL_BUFF_SIZE));
-
-        // struct sockaddr_nl src_addr;
-        // socklen_t addr_len = sizeof(src_addr);
-
-        // if (recvfrom(sock_fd, nlh, NLMSG_SPACE(TEST_NL_BUFF_SIZE), 0, (struct sockaddr*)&src_addr, &addr_len) < 0) {
-        //     perror("recvfrom");
-        //     close(sock_fd);
-        //     return -1;
-        // }
-
-        // struct genlmsghdr *genlh = (struct genlmsghdr *)NLMSG_DATA(nlh);
-        // if (genlh->cmd == GENL_TEST_CMD_ECHO) {
-        //     std::cout << "Received message: " << (char *)NLMSG_DATA(nlh) + GENL_HDRLEN << std::endl;
-        // }
-
-        // free(nlh);
+        
     }
 
     close(sock_fd);

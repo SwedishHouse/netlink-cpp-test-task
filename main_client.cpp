@@ -15,6 +15,9 @@
 
 int main() {
     unsigned int counter = 0;
+
+
+
     int sock_fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
     if (sock_fd < 0) {
         perror("socket");
@@ -51,10 +54,10 @@ int main() {
     sender_addr.nl_groups = 0; // In modern must be zero
 
     // Init process done (gennl_client_init())
-    const std::string request_base = "From client: ";
+    std::string request;
     std::string response; 
     // Start sending to server
-    while (true)
+    while (std::getline(std::cin, request))
     {
         /* code */
     
@@ -85,9 +88,8 @@ int main() {
         genlhdr_ = (struct genlmsghdr *)NLMSG_DATA(nlh_);
         genlhdr_->cmd = CMD_CALCULATE;
 
-        response = request_base + std::to_string(++counter);
         // Копируем данные в Netlink-сообщение
-        strcpy((char *)genlhdr_ + GENL_HDRLEN, response.c_str());
+        strcpy((char *)genlhdr_ + GENL_HDRLEN, request.c_str());
 
         // Заполняем структуру iovec
         iov_.iov_base = (void *)nlh_;

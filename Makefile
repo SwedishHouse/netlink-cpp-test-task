@@ -4,11 +4,11 @@ LDFLAGS = -L/usr/local/lib -lgtest -lgtest_main -pthread -lnl-3 -lnl-genl-3
 
 all: main_server main_client test_math test_data_handler
 
-main_server: main_server.o action_handler.o request_processing.o pid_manager.o
-	$(CXX) -o main_server main_server.o action_handler.o request_processing.o pid_manager.o $(LDFLAGS)
+main_server: main_server.o action_handler.o request_processing.o pid_manager.o data_handler.o
+	$(CXX) -o main_server main_server.o action_handler.o request_processing.o pid_manager.o data_handler.o $(LDFLAGS)
 
-main_client: main_client.o action_handler.o request_processing.o pid_manager.o
-	$(CXX) -o main_client main_client.o action_handler.o request_processing.o pid_manager.o $(LDFLAGS)
+main_client: main_client.o action_handler.o request_processing.o pid_manager.o data_handler.o
+	$(CXX) -o main_client main_client.o action_handler.o request_processing.o pid_manager.o data_handler.o $(LDFLAGS)
 
 test_math: tests/test_math.o action_handler.o
 	$(CXX) $(CXXFLAGS) -o tests/test_math tests/test_math.o action_handler.o $(LDFLAGS)
