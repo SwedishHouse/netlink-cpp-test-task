@@ -8,7 +8,7 @@ void PIDManager::writePIDToFile(const std::string& filename, int value) {
     if (file.is_open()) {
         file << value << std::endl;
         file.close();
-        std::cout << "Значение " << value << " записано в файл: " << filename << std::endl;
+        // std::cout << "Значение " << value << " записано в файл: " << filename << std::endl; //Debug only
     } else {
         std::cerr << "Не удалось открыть файл для записи." << std::endl;
     }
@@ -21,7 +21,7 @@ pid_t PIDManager::readPIDFromFile(const std::string& filename) {
     if (file.is_open()) {
         file >> pid;
         file.close();
-        std::cout << "PID считан из файла: " << filename << std::endl;
+        // std::cout << "PID считан из файла: " << filename << std::endl; //debug only
     } else {
         std::cerr << "Не удалось открыть файл для чтения." << std::endl;
     }

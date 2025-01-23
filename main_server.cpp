@@ -36,7 +36,7 @@ int main() {
 
     pid_t server_pid = getpid();
     pid_mngr.writePIDToFile(pid_info, server_pid);
-    std::cout << "Server PID: " << server_pid <<std::endl;
+    // std::cout << "Server PID: " << server_pid <<std::endl; // DEbug only
     
     sa.nl_family = AF_NETLINK; // Family Must
     sa.nl_pid = server_pid; //PID MUST

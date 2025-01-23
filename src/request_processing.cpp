@@ -36,7 +36,7 @@ std::string receive_gnl_message(int listen_socket)
         return "ERROR";
     }
 
-    std::cout << "Sender PID: " << nlh->nlmsg_pid << std::endl;
+    // std::cout << "Sender PID: " << nlh->nlmsg_pid << std::endl; // Debug only
 
     // Проверяем, что получено Generic Netlink-сообщение
     if (nlh->nlmsg_type == NLMSG_DONE) {
@@ -112,7 +112,7 @@ int send_gnl_message(const std::string message, int socket_for_send)
         free(nlh_);
         return INCORRECT_VALUE;
     }
-    printf("Sent bytes:%ld\n", sent_bytes);
+    // printf("Sent bytes:%ld\n", sent_bytes); //debug only
     free(nlh_);
 
     return sent_bytes;

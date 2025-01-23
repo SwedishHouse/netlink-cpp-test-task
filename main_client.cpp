@@ -33,7 +33,7 @@ int main() {
 
     
     pid_t server_pid, client_pid = getpid();
-    std::cout << "Client pid: " << client_pid << std::endl;
+    // std::cout << "Client pid: " << client_pid << std::endl; // debug only
     client_addr.nl_family = AF_NETLINK; // Family Must
     client_addr.nl_pid = client_pid; //PID MUST
     client_addr.nl_groups = 0; // In modern must be zero
@@ -47,7 +47,7 @@ int main() {
     // Now works with server socket
     PIDManager pid_mngr;
     server_pid = pid_mngr.readPIDFromFile(pid_info);
-    std::cout << "Server PID: " << server_pid <<std::endl;
+    // std::cout << "Server PID: " << server_pid <<std::endl; //DEbug only
 
     sender_addr.nl_family = AF_NETLINK; // Family Must
     sender_addr.nl_pid = server_pid; //PID MUST
@@ -109,7 +109,7 @@ int main() {
             free(nlh_);
             return INCORRECT_VALUE;
         }
-        printf("Sent bytes:%ld\n", sent_bytes);
+        // printf("Sent bytes:%ld\n", sent_bytes); //debug only
         free(nlh_);
 
         std::cout << receive_gnl_message(sock_fd) << std::endl;
