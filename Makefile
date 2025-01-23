@@ -4,11 +4,11 @@ LDFLAGS = -L/usr/local/lib -lgtest -lgtest_main -pthread -lnl-3 -lnl-genl-3
 
 all: main_server main_client test_math test_data_handler
 
-main_server: main_server.o action_handler.o
-	$(CXX) -o main_server main_server.o action_handler.o $(LDFLAGS)
+main_server: main_server.o action_handler.o request_processing.o pid_manager.o
+	$(CXX) -o main_server main_server.o action_handler.o request_processing.o pid_manager.o $(LDFLAGS)
 
-main_client: main_client.o action_handler.o
-	$(CXX) -o main_client main_client.o action_handler.o $(LDFLAGS)
+main_client: main_client.o action_handler.o request_processing.o pid_manager.o
+	$(CXX) -o main_client main_client.o action_handler.o request_processing.o pid_manager.o $(LDFLAGS)
 
 test_math: tests/test_math.o action_handler.o
 	$(CXX) $(CXXFLAGS) -o tests/test_math tests/test_math.o action_handler.o $(LDFLAGS)
@@ -30,6 +30,13 @@ tests/test_math.o: tests/test_math.cpp
 
 test_data_handler: tests/test_data_handler.o data_handler.o action_handler.o
 	$(CXX) $(CXXFLAGS) -o tests/test_data_handler tests/test_data_handler.o data_handler.o action_handler.o $(LDFLAGS)
+
+request_processing.o: src/request_processing.cpp inc/request_processing.h
+	$(CXX) $(CXXFLAGS) -c src/request_processing.cpp
+
+pid_manager.o: src/pid_manager.cpp inc/pid_manager.h
+	$(CXX) $(CXXFLAGS) -c src/pid_manager.cpp
+
 
 clean:
 	rm -f *.o main_server main_client tests/test_math tests/test_data_handler
