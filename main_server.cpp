@@ -7,6 +7,9 @@
 #include <thread>
 #include <chrono>
 
+#include "data_handler.h"
+
+#define MESSAGE_BUFF_SIZE 1024
 #define GENL_TEST_FAMILY_NAME "genl_test"
 #define GENL_TEST_MCGRP_NAME "genl_test_mcgrp"
 
@@ -14,7 +17,7 @@ int main() {
     struct sockaddr_nl sa, client_sa;
     struct nlmsghdr *nlh;
     int sock_fd;
-    char buffer[256];
+    char buffer[MESSAGE_BUFF_SIZE];
 
     sock_fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
     if (sock_fd < 0) {
@@ -36,10 +39,10 @@ int main() {
         return -1;
     }
 
-    nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(256));
+    nlh = (struct nlmsghdr *)malloc(NLMSG_SPACE(MESSAGE_BUFF_SIZE));
     while (true) {
         socklen_t client_sa_len = sizeof(client_sa);
-        int len = recvfrom(sock_fd, nlh, NLMSG_SPACE(256), 0, (struct sockaddr *)&client_sa, &client_sa_len);
+        int len = recvfrom(sock_fd, nlh, NLMSG_SPACE(MESSAGE_BUFF_SIZE), 0, (struct sockaddr *)&client_sa, &client_sa_len);
         if (len < 0) {
             perror("recvfrom");
             close(sock_fd);
