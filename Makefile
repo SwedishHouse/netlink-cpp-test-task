@@ -37,6 +37,5 @@ request_processing.o: src/request_processing.cpp inc/request_processing.h
 pid_manager.o: src/pid_manager.cpp inc/pid_manager.h
 	$(CXX) $(CXXFLAGS) -c src/pid_manager.cpp
 
-
 clean:
-	rm -f *.o main_server main_client tests/test_math tests/test_data_handler
+	rm -f *.o main_server main_client tests/test_math tests/test_data_handler pid_info
